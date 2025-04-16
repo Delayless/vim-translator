@@ -5,16 +5,16 @@
 
 function! s:check_job() abort
   if exists('*jobstart') || exists('*job_start')
-    call health#report_ok('Async check passed')
+    call v:lua.vim.health.ok('Async check passed')
   else
-    call health#report_error('Job feature is required but not found')
+    call v:lua.vim.health.error('Job feature is required but not found')
   endif
 endfunction
 
 function! s:check_floating_window() abort
   " nvim, but doesn't have floating window
   if !exists('*nvim_open_win')
-    call health#report_error(
+    call v:lua.vim.health.error(
       \ 'Floating window is missed on the current version Nvim',
       \ 'Upgrade your Nvim")'
       \ )
@@ -32,13 +32,13 @@ function! s:check_floating_window() abort
       \ })
     call nvim_win_close(test_win, v:true)
   catch /^Vim\%((\a\+)\)\=:E119/
-    call health#report_error(
+    call v:lua.vim.health.error(
       \ 'The newest floating window feature is missed on the current version Nvim',
       \ 'Upgrade your Nvim")'
       \ )
     return
   endtry
-  call health#report_ok('Floating window check passed')
+  call v:lua.vim.health.ok('Floating window check passed')
 endfunction
 
 function! s:check_python() abort
@@ -49,10 +49,10 @@ function! s:check_python() abort
   elseif executable('python')
     let translator_python_host = 'python'
   else
-    call health#report_error('Python is required but not executable: ' . translator_python_host)
+    call v:lua.vim.health.error('Python is required but not executable: ' . translator_python_host)
     return
   endif
-  call health#report_ok('Using '.translator_python_host)
+  call v:lua.vim.health.ok('Using '.translator_python_host)
 endfunction
 
 function! health#translator#check() abort
